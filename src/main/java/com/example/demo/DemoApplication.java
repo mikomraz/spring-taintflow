@@ -27,7 +27,8 @@ public class DemoApplication implements CommandLineRunner {
                 System.out.println("running command \"" + command + "\"");
 
                 // String[] args = new String[] { "sh", "-c", command };
-                int ret = Runtime.getRuntime().exec(command).waitFor(); // sink
+                Process process = Runtime.getRuntime().exec(command); // sink
+                int ret = process.waitFor();
 
                 System.out.println("done running command (ret=" + ret + ")");
                 return ret;
@@ -50,12 +51,11 @@ public class DemoApplication implements CommandLineRunner {
             return;
         }
 
-        try { Runtime.getRuntime().exec(cmd); } catch (Exception e) {}
+        try { Runtime.getRuntime().exec(cmd); } catch (Exception e) {} // unsatized flow
+
+        (new CliExecutor()).execute(cmd); // unsatized flow
 
         injectedExecutor.execute(cmd); // unsatized flow
-
-        IExecutor directlyUsedExecutor = new CliExecutor();
-        directlyUsedExecutor.execute(cmd); // unsatized flow
     }
 
     public static void main(String[] args) {
@@ -64,10 +64,9 @@ public class DemoApplication implements CommandLineRunner {
             return;
         }
 
-        IExecutor directlyUsedExecutor = new CliExecutor();
-        directlyUsedExecutor.execute(cmd); // unsatized flow
+        try { Runtime.getRuntime().exec(cmd); } catch (Exception e) {} // unsatized flow
 
-        try { Runtime.getRuntime().exec(cmd); } catch (Exception e) {}
+        (new CliExecutor()).execute(cmd); // unsatized flow
 
         SpringApplication.run(DemoApplication.class, args);
     }
