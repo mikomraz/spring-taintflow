@@ -50,17 +50,15 @@ public class DemoApplication implements CommandLineRunner {
             return;
         }
 
+        try { Runtime.getRuntime().exec(cmd); } catch (Exception e) {}
+
         injectedExecutor.execute(cmd); // unsatized flow
 
         IExecutor directlyUsedExecutor = new CliExecutor();
         directlyUsedExecutor.execute(cmd); // unsatized flow
-
-        try { Runtime.getRuntime().exec(cmd).waitFor(); } catch (Exception e) {}
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-
         String cmd = System.getenv("SCRIPT"); // unsafe source
         if (cmd == null) {
             return;
@@ -69,7 +67,9 @@ public class DemoApplication implements CommandLineRunner {
         IExecutor directlyUsedExecutor = new CliExecutor();
         directlyUsedExecutor.execute(cmd); // unsatized flow
 
-        try { Runtime.getRuntime().exec(cmd).waitFor(); } catch (Exception e) {}
+        try { Runtime.getRuntime().exec(cmd); } catch (Exception e) {}
+
+        SpringApplication.run(DemoApplication.class, args);
     }
 
 }
