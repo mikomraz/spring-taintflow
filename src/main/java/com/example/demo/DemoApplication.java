@@ -27,14 +27,14 @@ public class DemoApplication implements CommandLineRunner {
                 System.out.println("running command \"" + command + "\"");
 
                 // String[] args = new String[] { "sh", "-c", command };
-                int ret = Runtime.getRuntime().exec(command).waitFor();     // sink
-                
+                int ret = Runtime.getRuntime().exec(command).waitFor(); // sink
+
                 System.out.println("done running command (ret=" + ret + ")");
                 return ret;
 
-            } catch (IOException|InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
-                return -1;   
+                return -1;
             }
         }
     }
@@ -42,31 +42,30 @@ public class DemoApplication implements CommandLineRunner {
     /*- - - - - 1st-party logic - - - - -*/
     @Autowired
     private IExecutor injectedExecutor;
- 
+
     @Override
     public void run(String... args) {
-		String cmd = System.getenv("SCRIPT");    // unsafe source
+        String cmd = System.getenv("SCRIPT"); // unsafe source
         if (cmd == null) {
-			return;
-		}
+            return;
+        }
 
-		injectedExecutor.execute(cmd);       // unsatized flow
+        injectedExecutor.execute(cmd); // unsatized flow
 
-		IExecutor directlyUsedExecutor = new CliExecutor();
-		directlyUsedExecutor.execute(cmd);       // unsatized flow
+        IExecutor directlyUsedExecutor = new CliExecutor();
+        directlyUsedExecutor.execute(cmd); // unsatized flow
     }
- 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
 
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
 
-		String cmd = System.getenv("SCRIPT");    // unsafe source
+        String cmd = System.getenv("SCRIPT"); // unsafe source
         if (cmd == null) {
-			return;
-		}
+            return;
+        }
 
-		IExecutor directlyUsedExecutor = new CliExecutor();
-		directlyUsedExecutor.execute(cmd);       // unsatized flow
-	}
+        IExecutor directlyUsedExecutor = new CliExecutor();
+        directlyUsedExecutor.execute(cmd); // unsatized flow
+    }
 
 }
